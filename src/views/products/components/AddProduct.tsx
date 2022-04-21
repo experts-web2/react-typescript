@@ -1,84 +1,112 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { allProductsApis } from '../../../services/product.services';
 import { useNavigate } from 'react-router-dom';
+import { Product, Category } from '../../../models/interface';
+import ProductCatagory from '../../catagories/components/ProductCatagory';
 
 const AddProduct = () => {
     const navigate = useNavigate();
-    const [prdouctName, setPrdouctName] = useState('')
-    const [prdouctPrice, setPrdouctPrice] = useState('')
-    const [prdouctAvatar, setPrdouctAvatar] = useState('')
-    const [prdouctDescription, setPrdouctDescription] = useState('')
-    const [productCatagory, setProductCatagory] = useState('')
-    const [email, setEmail] = useState("");
+    const initialState = {
+        name: '', price: 0, avatar: '', description: '', category: '', email: "", created_at: '', id: 0, updated_at: ''
+    }
+    const [selectedProduct, setSelectedProduct] = useState<Product>(initialState);
+    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
-    const addProductData = async () => {
-        const data = {
-            name: prdouctName,
-            email: email,
-            price: prdouctPrice,
-            avatar: prdouctAvatar,
-            description: prdouctDescription,
-            category: productCatagory
+
+    const handleChange = (e: any) => {
+        const { name, value } = e.target;
+        setSelectedProduct({ ...selectedProduct, [name]: value })
+
+    }
+    useEffect(() => {
+        if (selectedCategory) {
+            setSelectedProduct({ ...selectedProduct, category: selectedCategory.name })
         }
-        if (data.name === '' || data.price === '' || data.avatar === ''
-            || data.description === '' || data.category === '' || data.email === '') {
-            alert('Please fill all the fields')
+    }, [selectedCategory])
+
+
+
+
+    const addProductData = async (e: any) => {
+        const specificSeletedProduct = {
+            name: selectedProduct.name,
+            price: selectedProduct.price,
+            avatar: selectedProduct.avatar,
+            description: selectedProduct.description,
+            category: selectedProduct.category,
+            email: selectedProduct.email,
         }
-        else {
-            await allProductsApis.addProductInDatabase(data).then((res: any) => {
-                console.log(res)
-            })
-            navigate('/');
-        }
+        await allProductsApis.addProductInDatabase(specificSeletedProduct).then((res: any) => {
+            console.log(res)
+        });
+        navigate('/products')
     }
 
+
     return (
-        <div className="w-4/5 m-auto text-center" >
-            <h2 className="mt-16 pt-2 capitalize text-xl font-bold">create product</h2>
-            <div className="mt-2 mb-2 " >
-                <input type="text" placeholder="product name" className="border-2 p-1 m-1 w-100  border-zinc-800 w-80"
-                    value={prdouctName} onChange={(e) => setPrdouctName(e.target.value)}
-                    required
-                />
-            </div>
-            <div>
-                <textarea name="" id="" cols={40} rows={4} placeholder="Description"
-                    className=" border-2 p-1 m-1 border-zinc-800"
-                    value={prdouctDescription} onChange={(e) => setPrdouctDescription(e.target.value)}
-                    required
-                ></textarea>
-            </div>
-            <div className="mt-2 mb-2">
-                <input type="text" placeholder="imageUrl" value={prdouctAvatar} style={{ border: '2px solid black' }}
-                    required
-                    className="border-2 p-1 m-1 w-100  border-zinc-800 w-80"
-                    onChange={(e) => setPrdouctAvatar(e.target.value)} />
-            </div>
-            <div className="mt-2 mb-2">
-                <input type="text" placeholder="catagories"
-                    required
-                    className="border-2 p-1 m-1 w-100  border-zinc-800 w-80"
+        <>
 
-                    value={productCatagory} onChange={(e) => setProductCatagory(e.target.value)}
-                />
-            </div>
-            <div className="mt-2 mb-2">
-                <input type="Number" placeholder="price"
-                    required
-                    className="border-2 p-1 m-1 w-100  border-zinc-800 w-80"
-                    value={prdouctPrice} onChange={(e) => setPrdouctPrice(e.target.value)}
-                />
-            </div>
-            <div className="mt-2 mb-2">
-                <input type="email" placeholder="Email"
-                    required
-                    className="border-2 p-1 m-1 w-100  border-zinc-800 w-80"
+            <div className="w-4/5 m-auto text-center" >
+                <h2 className="mt-16 pt-1 capitalize text-xl font-bold">create product</h2>
+                <div className="mt-1 mb-2   max-w-xs mx-auto" >
 
-                    value={email} onChange={(e) => setEmail(e.target.value)}
-                />
+                    <input type="text" placeholder="product name" className="outline-0 p-1 m-1 w-full bg-white drop-shadow rounded"
+                        value={selectedProduct.name} onChange={handleChange}
+                        name="name"
+                        required
+
+                    />
+                </div>
+
+                <div className="max-w-xs mx-auto">
+                    <textarea id="" cols={40} rows={4} placeholder="Description"
+                        name="description"
+                        className="outline-0  p-1 m-1  bg-white drop-shadow rounded"
+
+                        value={selectedProduct.description} onChange={handleChange}
+                        required
+
+                    ></textarea>
+                </div>
+
+                <div className="mt-2 mb-2 max-w-xs mx-auto ">
+                    <input type="text" placeholder="imageUrl" value={selectedProduct.avatar}
+                        required
+                        name='avatar'
+                        className="outline-0 p-1 m-1 w-full bg-white drop-shadow rounded"
+                        onChange={handleChange} />
+                </div>
+
+                <div className="mt-2 mb-2 max-w-xs mx-auto" >
+
+
+                    <ProductCatagory setCatagory={setSelectedCategory} />
+
+                </div>
+
+                <div className="mt-2 mb-2 max-w-xs mx-auto">
+                    <input type="Number" placeholder="price"
+                        required
+
+                        name='price'
+                        className="outline-0 p-1 m-1 w-full bg-white drop-shadow rounded"
+                        value={selectedProduct.price} onChange={handleChange}
+                    />
+                </div>
+
+                <div className="mt-2 mb-2 max-w-xs mx-auto">
+                    <input type="email" placeholder="Email"
+                        required
+                        name='email'
+
+                        className="outline-0 p-1 m-1 w-full bg-white drop-shadow rounded"
+                        value={selectedProduct.email} onChange={handleChange}
+                    />
+                </div>
+                <button onClick={addProductData} className="mt-2 mb-2 rounded-full text-xl font-bold  w-80 bg-white drop-shadow rounded
+                ">Submit</button>
             </div>
-            <button onClick={addProductData} className="mt-2 mb-2 rounded-full text-xl font-bold">Submit</button>
-        </div>
+        </>
     )
 }
 
