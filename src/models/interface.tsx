@@ -5,7 +5,7 @@ export interface Product {
     avatar: string,
     category: number | string,
     description: string,
-    created_at: string,
+    createdAt: string,
     updated_at: string,
     email: string
 }
@@ -13,12 +13,6 @@ export interface Product {
 export interface ProductPageProps {
     products: Product,
 }
-
-export interface ProductSearchProps {
-    searchHandle: (event: React.ChangeEvent<HTMLInputElement>) => void
-    searchValue: string,
-}
-
 
 export interface Category {
     id: string,
@@ -29,11 +23,46 @@ export interface ProductCatagoryProps {
     setCatagory: (catagory: Category | null) => void
 }
 
-
-
-
 export interface ProductSearchPropsValue {
-    setSearchValue: string,
     searchValue: string
-
+    setsearchValue: any
 }
+
+
+
+
+export interface GetCategoriesMap {
+    name: string,
+    id: number
+}
+
+
+export interface TableRangeHandle{
+    setDateRange: (date: any) => void,
+    startDate:Date,
+    endDate:Date
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// export interface ProductSearchProps {
+//     searchHandle: (event: React.ChangeEvent<HTMLInputElement>) => void
+//     searchValue: string,
+// }

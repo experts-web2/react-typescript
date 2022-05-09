@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { ProductPageProps } from '../../../models/interface'
 
 const ProductTile = (props: ProductPageProps) => {
+    console.log('ajajja',props)
     const navigate = useNavigate();
     return (
         <>
